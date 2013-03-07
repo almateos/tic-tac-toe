@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GameJS Application</title>
+    <style type=text/css>
+        body{
+           background:#fff;
+           color:#222;
+           margin:1em 0 2em 6em;
+           padding:0;
+        }
+        #gjs-loader {
+            width: 50%;
+            height: 50%;
+            background: url('../skeleton/public/ajax-loader.gif');
+        }
+        .menu {
+            width: 200px;
+            float:left;
+        }
+        .content {
+        }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="assets/js/require.js"></script>
+    <script src="assets/js/gamecs.min.js"></script>
+    <script src="build/main.js"></script>
+</head>
+<body>
+  <div class="content">
+  <div id="gjs-loader"> Loading...  </div>
+  <canvas id="gjs-canvas"></canvas>
+  </div>'
+    <div>
+        <p>
+        Powered by <a href="http://gamecs.org">GameCs</a>.
+        </p>
+    </div>
+</body>
+</html>
