@@ -11,7 +11,9 @@ Start server
 ``node build/server.js``
 
 Browse website at http://localhost:3000
-::NOTE 1::*you can change port in src/server.coffee*
-::NOTE 2::*If you change port or want to host elsewhere than localhost, you have to
+
+Note 1: *You can change port in src/server.coffee*
+
+Note 2: *If you change port or want to host elsewhere than localhost, you have to
 change port and/or url in src/client.coffee*
 
