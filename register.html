@@ -8,6 +8,13 @@
         <div style="width:300px; margin:auto">
           <form class="form" method="post">
             <fieldset>
+            <% if(typeof error !== 'undefined') { %>
+            <div class="errors">
+              <ul>
+                <li><%= error %></li>
+              </ul>
+            </div>
+            <% } %>
             <div class="control-group">
                 <div class="controls">
                     <label for="login" class="optional">Login</label>

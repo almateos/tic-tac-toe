@@ -154,12 +154,11 @@ app.post '/register', (req, res) ->
           token: hash
         }
         res.redirect('/')
-      else
-        res.send('Login already exists')
-    else
-      res.send('Passwords don\'t match')
-  else
-    res.send('Missing params')
+      else error = 'Login already exists'
+    else error = 'Passwords don\'t match'
+  else error = 'Missing params'
+  res.render('register.html', {error: error})
+
 
 app.post '/login', (req, res) ->
   post = req.body
@@ -171,4 +170,5 @@ app.post '/login', (req, res) ->
     req.session.user = post.login
     res.redirect('/')
   else
-    res.send('Bad user/pass')
+    error = 'Bad user/pass'
+    res.render('login.html', {error: error})

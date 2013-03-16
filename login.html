@@ -6,6 +6,13 @@
 <body>
     <div id="wrapper" class="container-fluid">
         <div style="width:300px; margin:auto">
+          <% if(typeof error !== 'undefined') { %>
+          <div class="errors">
+            <ul>
+              <li><%= error %></li>
+            </ul>
+          </div>
+          <% } %>
           <form class="form" method="post">
             <fieldset>
             <div class="control-group">
