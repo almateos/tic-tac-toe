@@ -36,8 +36,9 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
   gcs.Display.setCaption('TileMap simple test')
   font = new gcs.Font('20px monospace')
 
+  login = document.getElementById('login').innerHTML
   ##### Network management
-  socket.emit('register')
+  socket.emit('register', login)
 
   socket.on 'registered', (name) ->
     console.log 'registered', name
