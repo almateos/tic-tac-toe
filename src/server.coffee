@@ -55,7 +55,13 @@ io.sockets.on 'connection', (socket) ->
 
     socket.on 'disconnect', () ->
       delete clients[socket.pl]
-      console.log('delete' + socket.pl)
+  
+      if parties[socket.party] != undefined
+        party   = parties[socket.party]
+        ennemy = if party[0] != socket.pl then party[0] else party[1]
+        emit(ennemy, 'msg', 'Your adversary just disconnected.')
+        emit(ennemy, 'end', 'win')
+        delete parties[socket.party]
       
   socket.on 'register', (pl) ->
     console.log('register:', pl)
@@ -94,8 +100,7 @@ io.sockets.on 'connection', (socket) ->
   socket.on 'move', (gid) ->
     grid = grids[socket.party]
     grid[gid] = socket.team
-    partyId = socket.party
-    party   = parties[partyId]
+    party   = parties[socket.party]
     ennemy = if party[0] != socket.pl then party[0] else party[1]
 
     emit(ennemy, 'move', gid)
@@ -104,8 +109,9 @@ io.sockets.on 'connection', (socket) ->
       for j in [0...rules[i].length]
         res = false if(grid[rules[i][j]] != socket.team)
       if res == true
-        emit(socket.pl, 'end', 'win')
-        emit(ennemy, 'end', 'lose')
+        emit(socket.pl, 'end', true)
+        emit(ennemy, 'end', false)
+        delete parties[socket.party]
 
 
 # Express "actions"

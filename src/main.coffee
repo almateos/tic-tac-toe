@@ -16,6 +16,7 @@ io     = window.io
 socket = io.connect('http://localhost:3000')
 
 require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
+
   #### Some game variables
   # screen size
   s1 = [600, 600]
@@ -28,6 +29,7 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
   mouseover = false
 
   dirty = true
+  doNotify = true
   grid = []
   id = -1
   username = 'guest'
@@ -37,6 +39,26 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
   font = new gcs.Font('20px monospace')
 
   login = document.getElementById('login').innerHTML
+
+
+  ###### Dom events 
+  canvas = document.getElementById('gjs-canvas')
+  canvas.addEventListener("mouseout", () ->
+    dirty = true
+    mouseover = false
+  , false)
+  canvas.addEventListener("mouseover", () ->
+    dirty = true
+    mouseover = true
+  , false)
+
+  notification = document.getElementById('notifications')
+
+  notify = (msg, clean) ->
+    clean = clean || false
+    notification.innerHTML = '' if clean
+    notification.innerHTML += msg
+
   ##### Network management
   socket.emit('register', login)
 
@@ -45,12 +67,16 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     id = name
     username = 'player_' + name
 
+  socket.on 'msg', (msg) ->
+    notify(msg)
+
   socket.on 'move', (gid) ->
     console.log 'move', gid
     grid[gid] = !myTeam
     gcs.Key.get()
     myTurn = true
     dirty = true
+    doNotify = true
 
   socket.on 'team', (value) ->
     console.log 'team', value
@@ -58,8 +84,9 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     myTeam = value
     myTurn = value
     dirty = true
+    doNotify = true
 
-  socket.on 'end', (value) ->
+  socket.on 'end', (didWin) ->
     alive = false
     surface = new Surface(s1)
     #for key, v of gcs.Display.getSurface()
@@ -68,21 +95,11 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     display.clear()
     surface.setAlpha(0.7)
     display.blit(surface)
-    msg = 'you ' + value
+
+    msg = 'you ' + (if didWin then 'won' else 'lost')
     display.blit(font.render(msg), [s1[0] / 2 - 40, s1[1] / 2 - 5])
-    console.log 'end', value
-
-  ###### Dom events 
-  element = document.getElementById('gjs-canvas')
-  element.addEventListener("mouseout", () ->
-    dirty = true
-    mouseover = false
-  , false)
-  element.addEventListener("mouseover", () ->
-    dirty = true
-    mouseover = true
-  , false)
-
+    notify(msg)
+    console.log 'winner ?', didWin
 
   ###### Game Management
   gcs.ready () ->
@@ -161,27 +178,35 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
               dirty = true
 
             else if (event.type == gcs.Key.MOUSE_UP)
-              if(grid[gid] == undefined)
+              if(grid[gid] == undefined && mouseover)
+                console.log(mouseover)
                 grid[gid] = myTeam
                 socket.emit('move', gid)
                 myTurn = false
                 dirty = true
+                doNotify = true
                 # draw mouse over
           if dirty
             draw()
-
-
-        if(myTurn)
-          draw()
-          msg = 'Your turn to play'
-          display.blit(font.render(msg), [0, 0])
-        else
-          if dirty
-            if(ready)
-              draw()
-              display.blit(font.render('Awaiting player move ...' ))
-            else
-              display.blit(font.render('Awaiting player connection ...' ), [s1[0] / 2 - 100, s1[1] / 2 - 5])
             dirty = false
+
+
+        if doNotify
+          doNotify = false
+          if(myTurn)
+              draw()
+              msg = 'Your turn to play !!!'
+              notify(msg)
+              #display.blit(font.render(msg), [0, 0])
+          else
+              if(ready)
+                draw()
+                msg = 'Awaiting player move ...'
+                notify(msg)
+                #display.blit(font.render(msg))
+              else
+                msg = 'Awaiting player connection ...'
+                display.blit(font.render(msg ), [s1[0] / 2 - 100, s1[1] / 2 - 5])
+                notify(msg)
 
     gcs.Time.fpsCallback(tick, this, 60)
