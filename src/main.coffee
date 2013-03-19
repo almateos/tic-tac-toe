@@ -32,13 +32,13 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
   doNotify = true
   grid = []
   id = -1
-  username = 'guest'
+  #username = 'guest'
 
   display = gcs.Display.setMode(s1)
   gcs.Display.setCaption('TileMap simple test')
   font = new gcs.Font('20px monospace')
 
-  login = document.getElementById('login').innerHTML
+  username = document.getElementById('username').innerHTML
 
 
   ###### Dom events 
@@ -60,12 +60,11 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     notification.innerHTML += msg
 
   ##### Network management
-  socket.emit('register', login)
+  socket.emit('register', username)
 
   socket.on 'registered', (name) ->
     console.log 'registered', name
     id = name
-    username = 'player_' + name
 
   socket.on 'msg', (msg) ->
     notify(msg)

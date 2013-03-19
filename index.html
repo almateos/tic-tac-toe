@@ -24,10 +24,49 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="assets/js/require.js"></script>
     <script src="assets/js/gamecs.min.js"></script>
+    <script src="assets/js/BIG.js"></script>
+    <script>
+    require(['BIG'], function(BIG) {
+        window.BIG = BIG;
+        BIG.init({
+            api_key: "<%= api_key %>",
+            player_id: "<%= player_id %>",
+            player_token: "<%= player_token %>"
+        },
+        function(err, data) {
+            console.log('api.init:', err, data);
+            if(err)
+              console.log(err);
+            else
+              user = data.response;
+
+              data2 = { lobbies: [
+                { name: 'peanut', connected: false, amount: 0},
+                { name: 'bronze', connected: false, amount: 100},
+                { name: 'silver', connected: false, amount: 250},
+                { name: 'gold',   connected: false, amount: 500}
+              ]};
+              for(i=0; i<data2.lobbies.length; i++) data2.lobbies[i].disabled = user.real_balance < data2.lobbies[i].amount;
+              BIG.ui('lobby', '#lobby',  data2);
+
+              BIG.ui('bank', '#bank', { amount: user.real_balance, player_id: user.id });
+
+
+              // Disconnect user (from api and lobbies)
+              window.onbeforeunload = function (e) {
+                BIG.disconnect('player_1', function(err, data) { console.log(err, data) } );
+              }
+              
+              //BIG.ui({type:'status', element: '#status'}, callback);
+        })
+    })
+    </script>
     <script src="build/main.js"></script>
 </head>
 <body>
-  <div>Hello <span id='login'><%= login %></span> !</div>
+  <div>Hello <span id='username'><%= player_id %></span> !</div>
+    <div id="bank"></div>
+    <div id="lobby"></div>
   <div id='notifications'></div>
   <div class="content">
     <div id="gjs-loader"> Loading...  </div>
