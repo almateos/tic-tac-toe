@@ -16,7 +16,7 @@ path = require('path')
 
 config = {
   api:
-    host: 'api.almateos.local'
+    host: 'api.almateos.dev'
 }
 
 # TODO: 1. move big code below in a file
