@@ -31,7 +31,7 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
   dirty = true
   doNotify = true
   grid = []
-  id = -1
+  id = 'guest'
   #username = 'guest'
 
   display = gcs.Display.setMode(s1)
@@ -77,7 +77,11 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     dirty = true
     doNotify = true
 
-  socket.on 'team', (value) ->
+  socket.on 'team', (value, amount) ->
+    #console.log window.BIG
+    window.BIG.api 'GET', '/players/' + id, {}, (err, res) ->
+      window.BIG.ui('bank', '#bank', { amount: res.response.real_balance, player_id: id })
+
     console.log 'team', value
     ready = true
     myTeam = value
@@ -99,6 +103,9 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     display.blit(font.render(msg), [s1[0] / 2 - 40, s1[1] / 2 - 5])
     notify(msg)
     console.log 'winner ?', didWin
+
+    window.BIG.api 'GET', '/players/' + id, {}, (err, res) ->
+      window.BIG.ui('bank', '#bank', { amount: res.response.real_balance, player_id: id })
 
   ###### Game Management
   gcs.ready () ->

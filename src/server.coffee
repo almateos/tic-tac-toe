@@ -42,7 +42,7 @@ class BIG
     getParams = this.authKeys
     if(method == "GET")
       for k, v of params
-        getParams.k = v
+        getParams[k] = v
     endpoint += url.format({query: getParams})
 
     body = if (method == "GET") then '' else JSON.stringify(params);
@@ -125,7 +125,7 @@ io.sockets.on 'connection', (socket) ->
       party   = parties[socket.party]
       ennemy = if party[0] != socket.pl then party[0] else party[1]
       delete parties[socket.party]
-      BIG.api 'post', '/challenges', { winners: [ennemy], loosers: [socket.pl], cause: 'disconnection' }, (err, res) ->
+      BIG.api 'POST', '/challenges/' + socket.pl, { id: socket.pl, result: 'loose', cause: 'disconnection' }, (err, res) ->
         emit(ennemy, 'msg', 'Your adversary just disconnected.')
         emit(ennemy, 'end', 'win')
         console.log('logged out:', err, res)
@@ -185,7 +185,7 @@ io.sockets.on 'connection', (socket) ->
       for j in [0...rules[i].length]
         res = false if(grid[rules[i][j]] != socket.team)
       if res == true
-        BIG.api 'post', '/challenges', { winners: [ennemy], loosers: [socket.pl], cause: 'normal' }, (err, res) ->
+        BIG.api 'post', '/challenges/' + socket.pl, { id: socket.pl, result: 'win', cause: 'normal' }, (err, res) ->
           emit(socket.pl, 'end', true)
           emit(ennemy, 'end', false)
           delete parties[socket.party]
@@ -204,7 +204,6 @@ getSessionHash = (login, password) ->
 app.get '/start-game/p1/:p1/p2/:p2',  (req, res) ->
   p1 = req.params.p1
   p2 = req.params.p2
-  console.log p1, p2
 
   if(clients[p1] != undefined && clients[p2] != undefined)
     parties[pa] = [p1, p2]
