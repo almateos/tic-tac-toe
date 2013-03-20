@@ -112,21 +112,25 @@ rules = [
 
 team = [false, true]
 
-io.sockets.on 'connection', (socket) ->
-  emit = (clientName, args...) ->
-    clients[clientName].emit.apply clients[clientName], args if(clients[clientName] != undefined)
+emit = (clientName, args...) ->
+  clients[clientName].emit.apply clients[clientName], args if(clients[clientName] != undefined)
 
-    socket.on 'disconnect', () ->
-      delete clients[socket.pl]
-  
-      if parties[socket.party] != undefined
-        party   = parties[socket.party]
-        ennemy = if party[0] != socket.pl then party[0] else party[1]
+io.sockets.on 'connection', (socket) ->
+
+  socket.on 'disconnect', () ->
+
+    if parties[socket.party] != undefined
+      party   = parties[socket.party]
+      ennemy = if party[0] != socket.pl then party[0] else party[1]
+      delete parties[socket.party]
+      BIG.api 'post', '/challenges', { winners: [ennemy], loosers: [socket.pl], cause: 'disconnection' }, (err, res) ->
         emit(ennemy, 'msg', 'Your adversary just disconnected.')
         emit(ennemy, 'end', 'win')
-        delete parties[socket.party]
-        BIG.api 'post', '/players', { id: pl, online: 0 }, (err, res) ->
-          console.log('logged in:', err, res)
+        console.log('logged out:', err, res)
+
+    BIG.api 'post', '/players', { id: socket.pl, online: 0 }, (err, res) ->
+      console.log('logged out:', err, res)
+    delete clients[socket.pl]
       
   socket.on 'register', (pl) ->
     console.log('register:', pl)
@@ -179,9 +183,10 @@ io.sockets.on 'connection', (socket) ->
       for j in [0...rules[i].length]
         res = false if(grid[rules[i][j]] != socket.team)
       if res == true
-        emit(socket.pl, 'end', true)
-        emit(ennemy, 'end', false)
-        delete parties[socket.party]
+        BIG.api 'post', '/challenges', { winners: [ennemy], loosers: [socket.pl], cause: 'normal' }, (err, res) ->
+          emit(socket.pl, 'end', true)
+          emit(ennemy, 'end', false)
+          delete parties[socket.party]
 
 
 # Express "actions"
@@ -195,8 +200,32 @@ getSessionHash = (login, password) ->
   return sha256.update(login + 's@lt//123' + password, "utf8").digest("base64")
 
 app.get '/start-game/p1/:p1/p2/:p2',  (req, res) ->
-  emit(waiting, 'team', team[0])
-  emit(pl, 'team', team[1])
+  p1 = req.params.p1
+  p2 = req.params.p2
+  console.log p1, p2
+
+  if(clients[p1] != undefined && clients[p2] != undefined)
+    parties[pa] = [p1, p2]
+    grids[pa] = []
+
+    clients[p1].index = 0
+    clients[p1].team = team[0]
+    clients[p1].party = pa
+    emit(p1, 'team', team[0])
+
+    clients[p2].index = 1
+    clients[p2].team = team[1]
+    clients[p2].party = pa
+    emit(p2, 'team', team[1])
+    code = 200
+    ret = 'ok'
+  else
+    code = 500
+    ret = 'ko'
+
+  res.writeHead(200, { 'Content-Type': 'application/json' })
+  res.write(JSON.stringify(ret))
+  res.end()
 
 app.get '/', (req, res) ->
   if(isLoggedIn(req))
