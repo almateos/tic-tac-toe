@@ -1,0 +1,36 @@
+body{
+    width: 760px;
+}
+
+.toto{
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.tip{
+    margin-top: 30px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    background-color : #f9e69f;
+    padding: 25px 0 25px 40px;
+    font-style: italic;
+    font-size: 14px;
+}
+
+.cut-point{
+    margin-top: 50px;
+    border: 1px dashed #cecece;
+    padding: 10px;
+
+}
+
+.back{
+    background: url(/assets/img/motif.jpg);
+}
+
+.sign{
+    background: url(/assets/img/sign-frame.png) no-repeat;
+    padding-top: 140px;
+    margin-left: 200px;
+}

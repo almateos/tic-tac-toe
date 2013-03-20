@@ -16,7 +16,7 @@ path = require('path')
 
 config = {
   api:
-    host: 'api.almateos.dev'
+    host: 'api.almateos.local'
 }
 
 # TODO: 1. move big code below in a file
@@ -258,6 +258,7 @@ login = (req, res, username, hash) ->
     req.session.user = username
 
     BIG.api 'post', '/players', { id: username }, (err, res2) ->
+      console.log('VINCE', res2, err)
       users[username].player_token = res2.data.response.token
       console.log('logged in:', err, res2)
       res.redirect('/')
