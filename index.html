@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>GameJS Application</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <style type=text/css>
-
-    </style>
     <script src="/socket.io/socket.io.js"></script>
     <script src="assets/js/require.js"></script>
     <script src="assets/js/gamecs.min.js"></script>
@@ -25,16 +20,18 @@
             else
               user = data.response;
 
-              data2 = { lobbies: [
-                { name: 'peanut', connected: false, amount: 1},
-                { name: 'bronze', connected: false, amount: 100},
-                { name: 'silver', connected: false, amount: 250},
-                { name: 'gold',   connected: false, amount: 500}
-              ]};
-              for(i=0; i<data2.lobbies.length; i++) data2.lobbies[i].disabled = user.real_balance < data2.lobbies[i].amount;
-              BIG.ui('lobby', '#lobby',  data2);
+              data2 = { 
+                lobbies: [
+                  { name: 'peanut', cost: 0},
+                  { name: 'bronze', cost: 100},
+                  { name: 'silver', cost: 250},
+                  { name: 'gold',   cost: 500}
+                 ],
+                 user: { balance: user.real_balance}
+              };
 
-              BIG.ui('bank', '#bank', { amount: user.real_balance, player_id: user.id });
+              BIG.ui('lobby', '#lobby',  data2);
+              BIG.ui('bank', '#bank', { balance: user.real_balance, player_id: user.id });
 
 
               // Disconnect user (from api and lobbies)
