@@ -1,42 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
     <title>Register</title>
 </head>
 <body>
-    <div id="wrapper" class="container-fluid">
-        <div style="width:300px; margin:auto">
-          <form class="form" method="post">
-            <fieldset>
-            <% if(typeof error !== 'undefined') { %>
-            <div class="errors">
-              <ul>
-                <li><%= error %></li>
-              </ul>
-            </div>
-            <% } %>
-            <div class="control-group">
-                <div class="controls">
-                    <label for="username" class="optional">Username</label>
-                    <input type="text" name="username" id="username" value="" class="span4">
+<p class="toto">You are about to live the Bet-in-Game experience in our demo game. Players' side.</p>
+
+<div class="tip">As a regular player, you have to login (or register) to start playing our fabulous demo game.</div>
+<div class="cut-point">
+    <div class="back"><br /><br />
+        <div class="sign">
+            <div>
+                <% if(typeof error !== 'undefined') { %>
+                <div class="errors">
+                    <ul>
+                        <li><%= error %></li>
+                    </ul>
                 </div>
-            </div>
-            <div class="control-group">
-                <div class="controls">
-                    <label for="password" class="optional">Password</label>
-                    <input type="password" name="password" id="password" value="" class="span4">
-                    <label for="password" class="optional">Password validation</label>
-                    <input type="password" name="password2" id="password2" value="" class="span4">
-                </div>
-            </div>
-            <div class="control-group">
+                <% } %>
+                <form class="form" method="post">
                     <div class="controls">
-                        <button type="submit" tabindex="3" class="btn btn-block btn-info" name="submit">Sign up</button>
+                        <label for="username" class="label-text">Username : </label>
+                        <input type="text" name="username" id="username" value="" class="span3 field">
                     </div>
-                </div>
-            </fieldset>
-        </form>
+                    <div class="controls">
+                        <label for="password" class="label-text">Password : </label>
+                        <input type="password" name="password" id="password" value="" class="span3 field">
+                    </div>
+                    <div class="controls">
+                        <label for="password" class="label-text">Password : </label>
+                        <input type="password" name="password2" id="password2" value="" class="span3 field">
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" tabindex="3" class="btn-success login-success" name="submit">Sign in</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+</div>
+
 </body>
 </html>
+

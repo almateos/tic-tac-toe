@@ -1718,6 +1718,7 @@ select:focus:invalid:focus {
   min-width: 16px;
   padding: 4px 5px;
   font-size: 14px;
+
   font-weight: normal;
   line-height: 20px;
   text-align: center;
