@@ -63,6 +63,7 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     ##### Network management
     socket.emit('register', username)
 
+
     socket.on 'registered', (name) ->
       console.log 'registered', name
       id = name
@@ -81,7 +82,8 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     socket.on 'team', (value, amount) ->
       #console.log window.BIG
       window.BIG.api 'GET', '/players/' + id, {}, (err, res) ->
-        window.BIG.lobby.render({ amount: res.response.real_balance, player_id: id })
+        #window.BIG.views.lobby.render({ user: { balance: res.response.real_balance }, player_id: id })
+        window.BIG.views.bank.render({ balance: res.response.real_balance, player_id: id })
 
       console.log 'team', value
       ready = true
@@ -108,7 +110,14 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
       console.log 'winner ?', didWin
 
       window.BIG.api 'GET', '/players/' + id, {}, (err, res) ->
-        window.BIG.lobby.render({ amount: res.response.real_balance, player_id: id })
+        window.BIG.views.bank.render({ balance: res.response.real_balance, player_id: id })
+
+        data = BIG.views.lobby.data
+        for i in [0...data.lobbies.length] then data.lobbies[i].connected = false
+        data.user.balance = res.response.real_balance
+        
+        console.log('dafuk', data)
+        window.BIG.views.lobby.render(data)
 
     ###### Game Management
     gcs.ready () ->
