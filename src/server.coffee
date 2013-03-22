@@ -180,6 +180,7 @@ io.sockets.on 'connection', (socket) ->
     ennemy = if party[0] != socket.pl then party[0] else party[1]
 
     emit(ennemy, 'move', gid)
+    res = null
     for i in [0...rules.length]
       res = true
       for j in [0...rules[i].length]
@@ -189,6 +190,16 @@ io.sockets.on 'connection', (socket) ->
           emit(socket.pl, 'end', true)
           emit(ennemy, 'end', false)
           delete parties[socket.party]
+    count = 0
+    for i in [0...grid.length] then if grid[i] != undefined then count++
+
+    console.log 'is it end ?', res, count
+    if !res && count == 9
+      BIG.api 'post', '/challenges/' + socket.pl, { id: socket.pl, result: 'draw', cause: 'normal' }, (err, res) ->
+        emit(socket.pl, 'end', null)
+        emit(ennemy, 'end', null)
+        delete parties[socket.party]
+
 
 
 # Express "actions"

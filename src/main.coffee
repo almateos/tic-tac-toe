@@ -79,7 +79,7 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
       dirty = true
       doNotify = true
 
-    socket.on 'team', (value, amount) ->
+    socket.on 'team', (value) ->
       #console.log window.BIG
       window.BIG.api 'GET', '/players/' + id, {}, (err, res) ->
         #window.BIG.views.lobby.render({ user: { balance: res.response.real_balance }, player_id: id })
@@ -103,8 +103,8 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
       surface.setAlpha(0.7)
       display.blit(surface)
 
-      msg = 'you ' + (if didWin then 'won' else 'lost')
-      display.blit(font.render(msg), [s1[0] / 2 - 40, s1[1] / 2 - 5])
+      msg = (if didWin then 'won' else if didWin == false then 'lost' else 'draw')
+      display.blit(font.render(msg), [s1[0] / 2 - 20, s1[1] / 2 - 5])
       display.blit(font.render('Click to join lobbies'), [s1[0] / 2 - 110, s1[1] / 2 + 15])
       notify(msg)
       console.log 'winner ?', didWin
