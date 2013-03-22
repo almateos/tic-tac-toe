@@ -56,10 +56,11 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     notification = document.getElementById('notifications')
 
     notify = (msg, clean) ->
+      date = new Date()
       clean = clean || false
       notification.innerHTML = '' if clean
-      notification.innerHTML += '<li>' + msg + '</li>'
-      notifications.scrollTop += 20
+      notification.innerHTML += '<li>' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' > ' + msg + '</li>'
+      notifications.scrollTop += document.body.offsetHeight
 
     ##### Network management
     socket.emit('register', username)
