@@ -27,6 +27,93 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
   myTurn = ready = false
   grid = []
 
+  display = gcs.Display.setMode(s1)
+  gcs.Display.setCaption('That\'s Tic Tac Toe Bro, BOOM !')
+  font = new gcs.Font('20px monospace')
+
+  username = document.getElementById('username').innerHTML
+
+
+  ###### Dom events 
+  canvas = document.getElementById('gjs-canvas')
+  canvas.addEventListener("mouseout", () ->
+    dirty = true
+    mouseover = false
+  , false)
+  canvas.addEventListener("mouseover", () ->
+    dirty = true
+    mouseover = true
+  , false)
+
+  notification = document.getElementById('notifications')
+
+  notify = (msg, clean) ->
+    date = new Date()
+    clean = clean || false
+    notification.innerHTML = '' if clean
+    notification.innerHTML += '<li>' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' > ' + msg + '</li>'
+    notifications.scrollTop += document.body.offsetHeight
+
+  ##### Network management
+  socket.emit('register', username)
+
+
+  socket.on 'registered', (name) ->
+    console.log 'registered', name
+    id = name
+
+  socket.on 'msg', (msg) ->
+    notify(msg)
+
+  socket.on 'move', (gid) ->
+    console.log 'move', gid
+    grid[gid] = !myTeam
+    gcs.Key.get()
+    myTurn = true
+    dirty = true
+    doNotify = true
+
+  socket.on 'team', (value) ->
+    #console.log window.BIG
+    window.BIG.api 'GET', '/players/' + id, {}, (err, res) ->
+      #window.BIG.views.lobby.render({ user: { balance: res.response.real_balance }, player_id: id })
+      window.BIG.views.bank.render({ balance: res.response.real_balance, player_id: id })
+
+    console.log 'team', value
+    ready = true
+    myTeam = value
+    myTurn = value
+    dirty = true
+    doNotify = true
+
+  socket.on 'end', (didWin) ->
+    gcs.Key.get()
+    alive = false
+    surface = new Surface(s1)
+    #for key, v of gcs.Display.getSurface()
+    surface.blit(gcs.Display.getSurface())
+      
+    display.clear()
+    surface.setAlpha(0.7)
+    display.blit(surface)
+
+    msg = (if didWin then 'won' else if didWin == false then 'lost' else 'draw')
+    display.blit(font.render(msg), [s1[0] / 2 - 20, s1[1] / 2 - 5])
+    display.blit(font.render('Click to join lobbies'), [s1[0] / 2 - 110, s1[1] / 2 + 15])
+    notify(msg)
+    console.log 'winner ?', didWin
+
+    window.BIG.api 'GET', '/players/' + id, {}, (err, res) ->
+      window.BIG.views.bank.render({ balance: res.response.real_balance, player_id: id })
+
+      data = BIG.views.lobby.data
+      for i in [0...data.lobbies.length] then data.lobbies[i].connected = false
+      data.user.balance = res.response.real_balance
+      
+      console.log('dafuk', data)
+      window.BIG.views.lobby.render(data)
+
+
   init = (callback) ->
     alive  = doNotify = myTeam = dirty = true
     myTurn = ready = false
@@ -34,92 +121,6 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     callback()
 
   start = () ->
-
-    display = gcs.Display.setMode(s1)
-    gcs.Display.setCaption('That\'s Tic Tac Toe Bro, BOOM !')
-    font = new gcs.Font('20px monospace')
-
-    username = document.getElementById('username').innerHTML
-
-
-    ###### Dom events 
-    canvas = document.getElementById('gjs-canvas')
-    canvas.addEventListener("mouseout", () ->
-      dirty = true
-      mouseover = false
-    , false)
-    canvas.addEventListener("mouseover", () ->
-      dirty = true
-      mouseover = true
-    , false)
-
-    notification = document.getElementById('notifications')
-
-    notify = (msg, clean) ->
-      date = new Date()
-      clean = clean || false
-      notification.innerHTML = '' if clean
-      notification.innerHTML += '<li>' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' > ' + msg + '</li>'
-      notifications.scrollTop += document.body.offsetHeight
-
-    ##### Network management
-    socket.emit('register', username)
-
-
-    socket.on 'registered', (name) ->
-      console.log 'registered', name
-      id = name
-
-    socket.on 'msg', (msg) ->
-      notify(msg)
-
-    socket.on 'move', (gid) ->
-      console.log 'move', gid
-      grid[gid] = !myTeam
-      gcs.Key.get()
-      myTurn = true
-      dirty = true
-      doNotify = true
-
-    socket.on 'team', (value) ->
-      #console.log window.BIG
-      window.BIG.api 'GET', '/players/' + id, {}, (err, res) ->
-        #window.BIG.views.lobby.render({ user: { balance: res.response.real_balance }, player_id: id })
-        window.BIG.views.bank.render({ balance: res.response.real_balance, player_id: id })
-
-      console.log 'team', value
-      ready = true
-      myTeam = value
-      myTurn = value
-      dirty = true
-      doNotify = true
-
-    socket.on 'end', (didWin) ->
-      gcs.Key.get()
-      alive = false
-      surface = new Surface(s1)
-      #for key, v of gcs.Display.getSurface()
-      surface.blit(gcs.Display.getSurface())
-        
-      display.clear()
-      surface.setAlpha(0.7)
-      display.blit(surface)
-
-      msg = (if didWin then 'won' else if didWin == false then 'lost' else 'draw')
-      display.blit(font.render(msg), [s1[0] / 2 - 20, s1[1] / 2 - 5])
-      display.blit(font.render('Click to join lobbies'), [s1[0] / 2 - 110, s1[1] / 2 + 15])
-      notify(msg)
-      console.log 'winner ?', didWin
-
-      window.BIG.api 'GET', '/players/' + id, {}, (err, res) ->
-        window.BIG.views.bank.render({ balance: res.response.real_balance, player_id: id })
-
-        data = BIG.views.lobby.data
-        for i in [0...data.lobbies.length] then data.lobbies[i].connected = false
-        data.user.balance = res.response.real_balance
-        
-        console.log('dafuk', data)
-        window.BIG.views.lobby.render(data)
 
     ###### Game Management
     gcs.ready () ->
