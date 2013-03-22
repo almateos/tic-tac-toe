@@ -149,30 +149,6 @@ io.sockets.on 'connection', (socket) ->
         console.log('logged in:', err, res)
         emit(pl, 'registered', pl)
 
-  ###
-    #  parties.push [name] if(waiting)
-      if waiting && waiting != pl
-        console.log(2)
-        parties[pa] = [waiting, pl]
-        grids[pa] = []
-
-        clients[waiting].index = 0
-        clients[waiting].team = team[0]
-        clients[waiting].party = pa
-        emit(waiting, 'team', team[0])
-
-        clients[pl].index = 1
-        clients[pl].team = team[1]
-        clients[pl].party = pa
-        emit(pl, 'team', team[1])
-
-        waiting = false
-        pa++
-      else
-        waiting = pl
-      #pl++
-  ###
-
   socket.on 'move', (gid) ->
     grid = grids[socket.party]
     grid[gid] = socket.team
@@ -212,9 +188,10 @@ getSessionHash = (login, password) ->
   sha256 = crypto.createHash('sha256')
   return sha256.update(login + 's@lt//123' + password, "utf8").digest("base64")
 
-app.get '/start-game/p1/:p1/p2/:p2',  (req, res) ->
+app.get '/start-game/p1/:p1/p2/:p2/amount/:amount',  (req, res) ->
   p1 = req.params.p1
   p2 = req.params.p2
+  amount = req.params.amount
 
   if(clients[p1] != undefined && clients[p2] != undefined)
     parties[pa] = [p1, p2]
@@ -224,11 +201,13 @@ app.get '/start-game/p1/:p1/p2/:p2',  (req, res) ->
     clients[p1].team = team[0]
     clients[p1].party = pa
     emit(p1, 'team', team[0])
+    emit(p1, 'msg', p2 + ' just joined party for ' + amount + ' rubies')
 
     clients[p2].index = 1
     clients[p2].team = team[1]
     clients[p2].party = pa
     emit(p2, 'team', team[1])
+    emit(p2, 'msg', p1 + ' just joined party for ' + amount + ' rubies')
     code = 200
     ret = 'ok'
   else

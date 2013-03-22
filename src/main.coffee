@@ -58,7 +58,8 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     notify = (msg, clean) ->
       clean = clean || false
       notification.innerHTML = '' if clean
-      notification.innerHTML += msg
+      notification.innerHTML += '<li>' + msg + '</li>'
+      notifications.scrollTop += 20
 
     ##### Network management
     socket.emit('register', username)
