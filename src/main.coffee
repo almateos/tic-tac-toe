@@ -45,13 +45,15 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     mouseover = true
   , false)
 
-  notification = document.getElementById('notifications')
+  notifications = document.getElementById('notifications')
+  game = document.getElementById('content')
+  lobby = document.getElementById('lobby')
 
   notify = (msg, clean) ->
     date = new Date()
     clean = clean || false
-    notification.innerHTML = '' if clean
-    notification.innerHTML += '<li>' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' > ' + msg + '</li>'
+    notifications.innerHTML = '' if clean
+    notifications.innerHTML += '<li>' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' > ' + msg + '</li>'
     notifications.scrollTop += document.body.offsetHeight
 
   ##### Network management
@@ -74,6 +76,8 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     doNotify = true
 
   socket.on 'team', (value) ->
+    lobby.style.display = "none"
+    game.style.display = "block"
     #console.log window.BIG
     window.BIG.api 'GET', '/players/' + id, {}, (err, res) ->
       #window.BIG.views.lobby.render({ user: { balance: res.response.real_balance }, player_id: id })
@@ -232,6 +236,8 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
         else
           gcs.Key.get().forEach (event) ->
             if (event.type == gcs.Key.MOUSE_UP)
+              lobby.style.display = "block"
+              game.style.display = "none"
               init(start)
 
       gcs.Time.fpsCallback(tick, this, 60)
