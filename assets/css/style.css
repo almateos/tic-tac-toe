@@ -112,10 +112,6 @@ body{
     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 }
 
-.pull-left{
-    float: left;
-}
-
 .name{
     margin: 3px;
     padding: 15px 0 0 65px;
@@ -158,60 +154,76 @@ body{
     margin-top: 20px;
 }
 
-.lobby-global{
+#lobby{
     margin-top: 45px;
-    margin-left: 40px;
+    margin-left: 0px;
 }
-.frame-lobby{
+
+#lobby ul{
+}
+
+#lobby li{
     width: 169px;
     height: 150px;
     cursor: pointer;
-    margin-right: 30px;
+    margin-right: 20px;
+    display: inline-block;
+    vertical-align: bottom;
+    text-align: center;
+
+    list-style: none;
 }
 
-.frame-lobby:hover{
+#lobby li:hover{
     border: 1px dashed #442838;
 }
 
-.lobby-0-open{
+.lobby-cost {
+  margin-top: 90px;
+  font-style: italic;
+  text-align: right;
+}
+
+.lobby-action {
+  margin-top: 12px;
+  font-weight: bold;
+}
+
+#free.lobby-available{
     background: url(/assets/img/lobby-0-open.png) no-repeat;
 }
-.lobby-0-connect{
+#free.lobby-joined{
     background: url(/assets/img/lobby-0-connect.png) no-repeat;
 }
-.lobby-1-open{
+#bronze.lobby-available{
     background: url(/assets/img/lobby-1-open.png) no-repeat;
 }
-.lobby-1-connect{
+#bronze.lobby-joined{
     background: url(/assets/img/lobby-1-connect.png) no-repeat;
 }
-.lobby-1-disabled{
+#bronze.lobby-disabled{
     background: url(/assets/img/lobby-1-disabled.png) no-repeat;
 }
-.lobby-2-open{
+#silver.lobby-available{
     background: url(/assets/img/lobby-2-open.png) no-repeat;
 }
-.lobby-2-connect{
+#silver.lobby-joined{
     background: url(/assets/img/lobby-2-connect.png) no-repeat;
 }
-.lobby-2-disabled{
+#silver.lobby-disabled{
     background: url(/assets/img/lobby-2-disabled.png) no-repeat;
 }
-.lobby-3-open{
+#gold.lobby-available{
     background: url(/assets/img/lobby-3-open.png) no-repeat;
 }
-.lobby-3-connect{
+#gold.lobby-joined{
     background: url(/assets/img/lobby-3-connect.png) no-repeat;
 }
-.lobby-3-disabled{
+#gold.lobby-disabled{
     background: url(/assets/img/lobby-3-disabled.png) no-repeat;
 }
 
 
-
-#lobby pre{
-    display: none;
-}
 
 #notifications{
     margin-left: 155px;
@@ -247,10 +259,6 @@ body{
     background-color : #ffffff;
 }
 
-#lobby{
-    display: none;
-}
-
 #demo{
     background: url(/assets/img/plus.png) no-repeat;
     width: 35px;
@@ -261,4 +269,12 @@ body{
 
 #demo:hover {
     background: url(/assets/img/plus-hover.png) no-repeat;
+}
+
+#notifications {
+  height: 100px;
+  overflow: auto;
+  overflow-x: hidden;
+  display: block;
+  list-style: none;
 }
