@@ -48,34 +48,37 @@
     <script src="build/main.js"></script>
 </head>
 <body>
-<p class="toto">You are about to live the Bet-in-Game experience in our demo game. Players' side.</p>
-
-<div class="tip">As a regular player, you have to login (or register) to start playing our fabulous demo game.</div>
-<div class="cut-point">
-    <div class="back">
-        <div class="navbar">
-            <span id="profile">
-              <span>Hello <span id='username'><%= player_id %></span> ! </span>
-            </span>
-                <span class="add-credits pull-right">
-                <span id="bank"></span>
-            </span>
-        </div>
-        <div>
-            <div id="all-lobby"><p class="big-title"><span>NEW ! </span> You can play for fun as usual... or you can bet your rubies !</p><p class="explain">Victory means you win your opponent’s rubbies ! <br  />Rubies can be exchanged in the shop for special items or virtual currency.<br /><br /><p class="choose-lobby"><strong>Just click on the lobby you want to play in.</strong></p></div>
-            <!--<div class="lobby-global">
-                <div class="frame-lobby lobby-3-open pull-right"></div>
-                <div class="frame-lobby lobby-2-open pull-right"></div>
-                <div class="frame-lobby lobby-1-open pull-right"></div>
-                <div class="frame-lobby lobby-0-open pull-left"></div>
-            </div>-->
-
-            <div id="lobby"></div>
-            <div><ul id='notifications'></ul></div>
-            <div id="content" style="display:none">
-                <div id="gjs-loader"> Loading...  </div>
-                <canvas id="gjs-canvas"></canvas>
+    <p class="toto">You are about to live the Bet-in-Game experience in our demo game. Players' side.</p>
+    <div class="tip">As a regular player, you have to login (or register) to start playing our fabulous demo game.</div>
+    <div class="cut-point">
+        <div class="back">
+            <div class="navbar">
+                <span id="profile">
+                  <span>Hello <span id='username'><%= player_id %></span> ! </span>
+                </span>
+                    <span class="add-credits pull-right">
+                    <span id="bank"></span>
+                </span>
             </div>
+            <div id="content1">
+                <div id="all-lobby">  
+                    <p class="big-title">
+                        <span>NEW ! </span> You can play for fun as usual... or you can bet your rubies !
+                    </p>
+                    <p class="explain">
+                        Victory means you win your opponent’s rubbies ! <br/>
+                        Rubies can be exchanged in the shop for special items or virtual currency.<br/>
+                        <br/>
+                        <p class="choose-lobby"><strong>Just click on the lobby you want to play in.</strong>
+                    </p>
+                </div>
+                <div id="lobby"></div>
+            </div>
+            <div id="content2" style="display:none">
+                  <div id="gjs-loader"> Loading...  </div>
+                  <canvas id="gjs-canvas"></canvas>
+            </div>
+            <div><ul id='notifications'></ul></div>
         </div>
     </div>
 </div>

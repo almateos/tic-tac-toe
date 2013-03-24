@@ -46,8 +46,8 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
   , false)
 
   notifications = document.getElementById('notifications')
-  game = document.getElementById('content')
-  lobby = document.getElementById('lobby')
+  game = document.getElementById('content2')
+  lobby = document.getElementById('content1')
 
   notify = (msg, clean) ->
     date = new Date()
@@ -111,7 +111,7 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
       window.BIG.views.bank.render({ balance: res.response.real_balance, player_id: id })
 
       data = BIG.views.lobby.data
-      for i in [0...data.lobbies.length] then data.lobbies[i].connected = false
+      for i in [0...data.lobbies.length] then data.lobbies[i].status = false
       data.user.balance = res.response.real_balance
       
       console.log('dafuk', data)

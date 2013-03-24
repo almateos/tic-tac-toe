@@ -119,7 +119,7 @@ body{
     font-size: 18px;
     font-weight: bold;
     display: inline-block;
-    height:60px; 
+    height: 45px; 
 }
 
 .pull-right{
@@ -185,7 +185,7 @@ body{
     list-style: none;
 }
 
-#lobby li:hover{
+#lobby-available:hover {
     border: 1px dashed #442838;
 }
 
@@ -214,6 +214,7 @@ body{
 }
 #bronze.lobby-disabled{
     background: url(/assets/img/lobby-1-disabled.png) no-repeat;
+    opacity: 0.35;
 }
 #silver.lobby-available{
     background: url(/assets/img/lobby-2-open.png) no-repeat;
@@ -223,6 +224,7 @@ body{
 }
 #silver.lobby-disabled{
     background: url(/assets/img/lobby-2-disabled.png) no-repeat;
+    opacity: 0.35;
 }
 #gold.lobby-available{
     background: url(/assets/img/lobby-3-open.png) no-repeat;
@@ -232,6 +234,7 @@ body{
 }
 #gold.lobby-disabled{
     background: url(/assets/img/lobby-3-disabled.png) no-repeat;
+    opacity: 0.35;
 }
 
 
