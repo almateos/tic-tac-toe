@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Login</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="/socket.io/socket.io.js"></script>
     <script src="assets/js/require.js"></script>
     <script src="assets/js/gamecs.min.js"></script>
@@ -46,18 +48,45 @@
     <script src="build/main.js"></script>
 </head>
 <body>
-  <div>Hello <span id='username'><%= player_id %></span> !</div>
-    <div id="bank"></div>
-    <div id="lobby"></div>
-  <div id='notifications'></div>
-  <div class="content">
-    <div id="gjs-loader"> Loading...  </div>
-      <canvas id="gjs-canvas"></canvas>
-    </div>
-  <div>
-        <p>
-        Powered by <a href="http://gamecs.org">GameCs</a>.
-        </p>
-    </div>
+
+  <p class="toto">You are about to live the Bet-in-Game experience in our demo game. Players' side.</p>
+
+  <div class="tip">As a regular player, you have to login (or register) to start playing our fabulous demo game.</div>
+  <div class="cut-point">
+      <div class="back">
+          <div class="navbar">
+              <div class="pull-left name">Hello <span id='username'><%= player_id %></span> !</div>
+              <div class="add-credits pull-right">
+                  <div class="pull-right"><img src="/assets/img/plus.png"></div>
+                  <div id="bank"></div>
+              </div>
+          </div>
+          <div>
+              <div id="all-lobby"><p class="big-title"><span>NEW ! </span> You can play for fun as usual... or you can bet your rubies !</p><p class="explain">Victory means you win your opponent’s rubbies ! <br  />Rubies can be exchanged in the shop for special items or virtual currency.<br /><br /><p class="choose-lobby"><strong>Just click on the lobby you want to play in.</strong></p></p></div>
+              <div class="lobby-global">
+                  <div class="frame-lobby lobby-3-open pull-right"></div>
+                  <div class="frame-lobby lobby-2-open pull-right"></div>
+                  <div class="frame-lobby lobby-1-open pull-right"></div>
+                  <div class="frame-lobby lobby-0-open pull-left"></div>
+              </div>
+
+              <div id="lobby"></div>
+              <div id='notifications'></div>
+              <div class="content">
+                  <div id="gjs-loader"> Loading...  </div>
+                  <canvas id="gjs-canvas"></canvas>
+              </div>
+              <div>
+                  <p>
+                      Powered by <a href="http://gamecs.org">GameCs</a>.
+                  </p>
+              </div>
+          </div>
+      </div>
+  </div>
+
+
+
+
 </body>
 </html>
