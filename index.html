@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Login</title>
+    <meta charset="UTF-8">
     <link rel="stylesheet" href="/assets/css/style.css" />
     <script src="/socket.io/socket.io.js"></script>
     <script src="assets/js/require.js"></script>
@@ -57,13 +58,15 @@
                     <span id="bank"></span>
                 </span>
             </div>
-            <div id="rules">
-                In our special Tic Tac Toe, you can play for fun as usual... <strong>or you can bet your rubies !</strong><br /><br /><br />
-                <span>How does it works ? </span><p class="rules-explanation">Playing in a 100 rubies lobby means you bet 100 rubies on your victory and your opponent will do the same. The winner of the game wins the 200 rubies pot ! In the end, exchange your rubies for regular hard currency game, boosters, virtuals items, etc.</p>
-                <span>What do you have to do now ? </span><p class="rules-explanation">First, you have to buy rubies in our special shop (70% of the amount comes back to the publisher). Then, you just have to click on the lobby you want to play in and our matchmaking will find the right opponent for you. If you are connected to several lobbies, you will be matched with the first relevant opponent.</p>
-                <span>Click to join a lobby :</span>
+            <div id="content1">
+              <div id="rules">
+                  In our special Tic Tac Toe, you can play for fun as usual... <strong>or you can bet your rubies !</strong><br /><br /><br />
+                  <span>How does it works ? </span><p class="rules-explanation">Playing in a 100 rubies lobby means you bet 100 rubies on your victory and your opponent will do the same. The winner of the game wins the 200 rubies pot ! In the end, exchange your rubies for regular hard currency game, boosters, virtuals items, etc.</p>
+                  <span>What do you have to do now ? </span><p class="rules-explanation">First, you have to buy rubies in our special shop (70% of the amount comes back to the publisher). Then, you just have to click on the lobby you want to play in and our matchmaking will find the right opponent for you. If you are connected to several lobbies, you will be matched with the first relevant opponent.</p>
+                  <span>Click to join a lobby :</span>
+              </div>
+              <div id="lobby"></div>
             </div>
-            <div id="lobby"></div>
             <div id="content2" style="display:none">
                   <div id="gjs-loader"> Loading...  </div>
                   <canvas id="gjs-canvas"></canvas>
@@ -71,7 +74,6 @@
             <div><ul id='notifications'></ul></div>
         </div>
     </div>
-</div>
 </body>
 <script src="build/main.js"></script>
 </html>
