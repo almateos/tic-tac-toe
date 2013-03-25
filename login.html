@@ -5,13 +5,11 @@
     <title>Login</title>
 </head>
 <body>
-<p class="toto">You are about to live the Bet-in-Game experience in our demo game. Players' side.</p>
-
-<div class="tip">As a regular player, you have to login (or register) to start playing our fabulous demo game.</div>
 <div class="cut-point">
     <div class="back"><br /><br />
         <div class="sign">
             <div>
+                <div class="welcome-title"><img src="/assets/img/welcome-title.png"/></div>
                 <% if(typeof error !== 'undefined') { %>
                 <div class="errors">
                     <ul>
@@ -19,24 +17,20 @@
                     </ul>
                 </div>
                 <% } %>
-                <form class="form" method="post">
+                <form class="form" method="post" autocomplete="off">
                     <div class="controls">
-                        <label for="username" class="label-text">Username : </label>
+                        <label for="username" class="label-text">Username : </label><br />
                         <input type="text" name="username" id="username" value="" class="span3 field">
                     </div>
                     <div class="controls">
-                        <label for="password" class="label-text">Password : </label>
+                        <label for="password" class="label-text">Password : </label><br />
                         <input type="password" name="password" id="password" value="" class="span3 field">
                     </div>
-                    <div class="control-group">
-                        <div class="controls">
-                            <button type="submit" tabindex="3" class="btn-success login-success" name="submit">Sign in</button>
-                        </div>
+                    <div class="login">
+                        <button type="submit" tabindex="3" class="btn login-success" name="submit">Log in</button> <span>or <a tabindex="5" href="/register">Create an account</a> </span>
                     </div>
                 </form>
                 <br /><br /><br />
-                <p class="new"> New to Tic Tac Toe ? <a tabindex="5" href="/register">Sign up to Play</a></p>
-                <br /><br />
             </div>
         </div>
     </div>
