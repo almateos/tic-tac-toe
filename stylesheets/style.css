@@ -129,11 +129,9 @@ body{
     background: #40212f;
     padding: 6px 16px 6px 12px;
     margin-right: 10px;
-    cursor: pointer;
+
 }
-.add-credits:hover {
-    border: 1px solid #3e6b84;
-}
+
 
 #bank{
     text-decoration: none;
@@ -143,10 +141,12 @@ body{
     padding : 10px;
     text-align: center;
     margin-top: 40px;
-    .span{
-    color: #cd4545;
-    }
+
 }
+.big-title .span{
+    color: #cd4545;
+}
+
 .explain{
     font-size: 14px;
     text-align: center;
@@ -240,4 +240,16 @@ body{
 
 #lobby{
     display: none;
+}
+
+#demo{
+    background: url(/assets/img/plus.png) no-repeat;
+    width: 35px;
+    height: 36px;
+    border:none;
+    cursor: pointer;
+}
+
+#demo:hover {
+    background: url(/assets/img/plus-hover.png) no-repeat;
 }
