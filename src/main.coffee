@@ -19,23 +19,16 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
 
   #### Some game variables
   # screen size
+  id = 'guest'
   s1 = [600, 600]
-
-  alive  = true
-  myTurn = false
-  myTeam = true
-  ready = false
-
   mouseover = false
 
-  dirty = true
-  doNotify = true
+  alive  = doNotify = myTeam = dirty = true
+  myTurn = ready = false
   grid = []
-  id = 'guest'
-  #username = 'guest'
 
   display = gcs.Display.setMode(s1)
-  gcs.Display.setCaption('TileMap simple test')
+  gcs.Display.setCaption('That\'s Tic Tac Toe Bro, BOOM !')
   font = new gcs.Font('20px monospace')
 
   username = document.getElementById('username').innerHTML
@@ -55,12 +48,15 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
   notification = document.getElementById('notifications')
 
   notify = (msg, clean) ->
+    date = new Date()
     clean = clean || false
     notification.innerHTML = '' if clean
-    notification.innerHTML += msg
+    notification.innerHTML += '<li>' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' > ' + msg + '</li>'
+    notifications.scrollTop += document.body.offsetHeight
 
   ##### Network management
   socket.emit('register', username)
+
 
   socket.on 'registered', (name) ->
     console.log 'registered', name
@@ -77,10 +73,11 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     dirty = true
     doNotify = true
 
-  socket.on 'team', (value, amount) ->
+  socket.on 'team', (value) ->
     #console.log window.BIG
     window.BIG.api 'GET', '/players/' + id, {}, (err, res) ->
-      window.BIG.ui('bank', '#bank', { amount: res.response.real_balance, player_id: id })
+      #window.BIG.views.lobby.render({ user: { balance: res.response.real_balance }, player_id: id })
+      window.BIG.views.bank.render({ balance: res.response.real_balance, player_id: id })
 
     console.log 'team', value
     ready = true
@@ -90,6 +87,7 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     doNotify = true
 
   socket.on 'end', (didWin) ->
+    gcs.Key.get()
     alive = false
     surface = new Surface(s1)
     #for key, v of gcs.Display.getSurface()
@@ -99,120 +97,142 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     surface.setAlpha(0.7)
     display.blit(surface)
 
-    msg = 'you ' + (if didWin then 'won' else 'lost')
-    display.blit(font.render(msg), [s1[0] / 2 - 40, s1[1] / 2 - 5])
+    msg = (if didWin then 'won' else if didWin == false then 'lost' else 'draw')
+    display.blit(font.render(msg), [s1[0] / 2 - 20, s1[1] / 2 - 5])
+    display.blit(font.render('Click to join lobbies'), [s1[0] / 2 - 110, s1[1] / 2 + 15])
     notify(msg)
     console.log 'winner ?', didWin
 
     window.BIG.api 'GET', '/players/' + id, {}, (err, res) ->
-      window.BIG.ui('bank', '#bank', { amount: res.response.real_balance, player_id: id })
+      window.BIG.views.bank.render({ balance: res.response.real_balance, player_id: id })
 
-  ###### Game Management
-  gcs.ready () ->
-
-    a = s1 / 3
-
-    # Sprites
-    lineWidth = 10
-    s2 = [s1[0] / 3 - 20, s1[1] / 3 - 20]
-    spritePos = [s2[0] / 2 + lineWidth, s2[1] / 2 + lineWidth]
-    w = s2[0]
-
-    o = new Surface(s2)
-    colorThree = 'rgba(50, 0, 150, 0.8)'
-    gcs.Draw.circle(o, colorThree, spritePos, w/2.4, lineWidth)
-
-    s3 = [s1[0] / 3, s1[1] / 3]
-    x = new Surface(s3)
-    gcs.Draw.line(x, colorThree, [20, 0 + 10], [w, w], lineWidth)
-    gcs.Draw.line(x, colorThree, [w, 0 + 10], [20, w], lineWidth)
-
-    g = new Surface(s1)
-    gridLineWidth = 2
-    gcs.Draw.line(g, colorThree, [s1[0]/3,0], [s1[0]/3, s1[1]], gridLineWidth)
-    gcs.Draw.line(g, colorThree, [s1[0]*2/3,0], [s1[0]*2/3, s1[1]], gridLineWidth)
-    gcs.Draw.line(g, colorThree, [0, s1[1]/3], [s1[0], s1[1]/3], gridLineWidth)
-    gcs.Draw.line(g, colorThree, [0, s1[1]*2/3], [s1[0], s1[1]*2/3], gridLineWidth)
-
-    sprites = {
-      true: o
-      false: x
-    }
-
-
-    # Tilemap
-    map = new TileMap({
-      width: 3
-      height: 3
-      tilewidth: s1[0] / 3
-      tileheight: s1[1] / 3
-    })
-
+      data = BIG.views.lobby.data
+      for i in [0...data.lobbies.length] then data.lobbies[i].connected = false
+      data.user.balance = res.response.real_balance
       
-
-    mPos = [0, 0]
-    gid = 0
-
-    draw = () ->
-      display.clear()
-      display.blit(g)
-      # draw grid
-      for k in [0...grid.length]
-        display.blit(sprites[grid[k]], map.gid2pos(k + 1)) if grid[k] != undefined
-
-      if(grid[gid] == undefined && mouseover && myTurn)
-        sprite = sprites[myTeam]
-        sprite.setAlpha 0.5
-        display.blit(sprite, map.gid2pos(gid + 1))
-        sprite.setAlpha 0
-
-      #display.blit(font.render('Test: ' + gid + ' ...[' + mPos[0] + ', ' + mPos[1] + ']' ), [10, 250])
-
-    tick = (msDuration) ->
-
-      if(alive)
-        if(myTurn)
-          gcs.Key.get().forEach (event) ->
-            if (event.type == gcs.Key.MOUSE_MOTION)
-              mPos = event.pos
-              newgid = map.pos2gid(mPos[0], mPos[1])
-              if(gid != newgid)
-                gid = newgid
-                dirty = true
-
-            if (event.type == gcs.Key.MOUSE_DOWN)
-              dirty = true
-
-            else if (event.type == gcs.Key.MOUSE_UP)
-              if(grid[gid] == undefined && mouseover)
-                console.log(mouseover)
-                grid[gid] = myTeam
-                socket.emit('move', gid)
-                myTurn = false
-                dirty = true
-                doNotify = true
-                # draw mouse over
-          if dirty
-            draw()
-            dirty = false
+      console.log('dafuk', data)
+      window.BIG.views.lobby.render(data)
 
 
-        if doNotify
-          doNotify = false
+  init = (callback) ->
+    alive  = doNotify = myTeam = dirty = true
+    myTurn = ready = false
+    grid = []
+    callback()
+
+  start = () ->
+
+    ###### Game Management
+    gcs.ready () ->
+
+      a = s1 / 3
+
+      # Sprites
+      lineWidth = 10
+      s2 = [s1[0] / 3 - 20, s1[1] / 3 - 20]
+      spritePos = [s2[0] / 2 + lineWidth, s2[1] / 2 + lineWidth]
+      w = s2[0]
+
+      o = new Surface(s2)
+      colorThree = 'rgba(50, 0, 150, 0.8)'
+      gcs.Draw.circle(o, colorThree, spritePos, w/2.4, lineWidth)
+
+      s3 = [s1[0] / 3, s1[1] / 3]
+      x = new Surface(s3)
+      gcs.Draw.line(x, colorThree, [20, 0 + 10], [w, w], lineWidth)
+      gcs.Draw.line(x, colorThree, [w, 0 + 10], [20, w], lineWidth)
+
+      g = new Surface(s1)
+      gridLineWidth = 2
+      gcs.Draw.line(g, colorThree, [s1[0]/3,0], [s1[0]/3, s1[1]], gridLineWidth)
+      gcs.Draw.line(g, colorThree, [s1[0]*2/3,0], [s1[0]*2/3, s1[1]], gridLineWidth)
+      gcs.Draw.line(g, colorThree, [0, s1[1]/3], [s1[0], s1[1]/3], gridLineWidth)
+      gcs.Draw.line(g, colorThree, [0, s1[1]*2/3], [s1[0], s1[1]*2/3], gridLineWidth)
+
+      sprites = {
+        true: o
+        false: x
+      }
+
+
+      # Tilemap
+      map = new TileMap({
+        width: 3
+        height: 3
+        tilewidth: s1[0] / 3
+        tileheight: s1[1] / 3
+      })
+
+        
+
+      mPos = [0, 0]
+      gid = 0
+
+      draw = () ->
+        display.clear()
+        display.blit(g)
+        # draw grid
+        for k in [0...grid.length]
+          display.blit(sprites[grid[k]], map.gid2pos(k + 1)) if grid[k] != undefined
+
+        if(grid[gid] == undefined && mouseover && myTurn)
+          sprite = sprites[myTeam]
+          sprite.setAlpha 0.5
+          display.blit(sprite, map.gid2pos(gid + 1))
+          sprite.setAlpha 0
+
+        #display.blit(font.render('Test: ' + gid + ' ...[' + mPos[0] + ', ' + mPos[1] + ']' ), [10, 250])
+
+      tick = (msDuration) ->
+
+        if(alive)
           if(myTurn)
-              draw()
-              msg = 'Your turn to play !!!'
-              notify(msg)
-              #display.blit(font.render(msg), [0, 0])
-          else
-              if(ready)
-                draw()
-                msg = 'Awaiting player move ...'
-                notify(msg)
-                #display.blit(font.render(msg))
-              else
-                msg = 'Awaiting player connection ...'
-                display.blit(font.render(msg ), [s1[0] / 2 - 100, s1[1] / 2 - 5])
-                notify(msg)
+            gcs.Key.get().forEach (event) ->
+              if (event.type == gcs.Key.MOUSE_MOTION)
+                mPos = event.pos
+                newgid = map.pos2gid(mPos[0], mPos[1])
+                if(gid != newgid)
+                  gid = newgid
+                  dirty = true
 
-    gcs.Time.fpsCallback(tick, this, 60)
+              if (event.type == gcs.Key.MOUSE_DOWN)
+                dirty = true
+
+              else if (event.type == gcs.Key.MOUSE_UP)
+                if(grid[gid] == undefined && mouseover)
+                  console.log(mouseover)
+                  grid[gid] = myTeam
+                  socket.emit('move', gid)
+                  myTurn = false
+                  dirty = true
+                  doNotify = true
+                  # draw mouse over
+            if dirty
+              draw()
+              dirty = false
+
+
+          if doNotify
+            doNotify = false
+            if(myTurn)
+                draw()
+                msg = 'Your turn to play !!!'
+                notify(msg)
+                #display.blit(font.render(msg), [0, 0])
+            else
+                if(ready)
+                  draw()
+                  msg = 'Awaiting player move ...'
+                  notify(msg)
+                  #display.blit(font.render(msg))
+                else
+                  msg = 'Awaiting player connection ...'
+                  display.blit(font.render(msg ), [s1[0] / 2 - 160, s1[1] / 2 - 5])
+                  notify(msg)
+        else
+          gcs.Key.get().forEach (event) ->
+            if (event.type == gcs.Key.MOUSE_UP)
+              init(start)
+
+      gcs.Time.fpsCallback(tick, this, 60)
+  init(start)
