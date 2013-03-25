@@ -117,7 +117,12 @@ body{
 }
 
 .name{
-    padding: 18px;
+    margin: 3px;
+    padding: 15px 0 0 65px;
+    background: url(/assets/img/character2.png) no-repeat;
+    height: 30px;
+    font-size: 18px;
+    font-weight: bold;
 }
 .pull-right{
     float: right;
@@ -162,6 +167,10 @@ body{
     height: 150px;
     cursor: pointer;
     margin-right: 30px;
+}
+
+.frame-lobby:hover{
+    border: 1px dashed #442838;
 }
 
 .lobby-0-open{
