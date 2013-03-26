@@ -48,10 +48,8 @@
     <script src="build/main.js"></script>
 </head>
 <body>
-    <p class="toto">You are about to live the Bet-in-Game experience in our demo game. Players' side.</p>
-    <div class="tip">As a regular player, you have to login (or register) to start playing our fabulous demo game.</div>
     <div class="cut-point">
-        <div class="back">
+        <div class="back2">
             <div class="navbar">
                 <span id="profile">
                   <span>Hello <span id='username'><%= player_id %></span> ! </span>
@@ -60,20 +58,13 @@
                     <span id="bank"></span>
                 </span>
             </div>
-            <div id="content1">
-                <div id="all-lobby">  
-                    <p class="big-title">
-                        <span>NEW ! </span> You can play for fun as usual... or you can bet your rubies !
-                    </p>
-                    <p class="explain">
-                        Victory means you win your opponent’s rubbies ! <br/>
-                        Rubies can be exchanged in the shop for special items or virtual currency.<br/>
-                        <br/>
-                        <p class="choose-lobby"><strong>Just click on the lobby you want to play in.</strong>
-                    </p>
-                </div>
-                <div id="lobby"></div>
+            <div id="rules">
+                In our special Tic Tac Toe, you can play for fun as usual... <strong>or you can bet your rubies !</strong><br /><br /><br />
+                <span>How does it works ? </span><p class="rules-explanation">Playing in a 100 rubies lobby means you bet 100 rubies on your victory and your opponent will do the same. The winner of the game wins the 200 rubies pot ! In the end, exchange your rubies for regular hard currency game, boosters, virtuals items, etc.</p>
+                <span>What do you have to do now ? </span><p class="rules-explanation">First, you have to buy rubies in our special shop (70% of the amount comes back to the publisher). Then, you just have to click on the lobby you want to play in and our matchmaking will find the right opponent for you. If you are connected to several lobbies, you will be matched with the first relevant opponent.</p>
+                <span>Click to join a lobby :</span>
             </div>
+            <div id="lobby"></div>
             <div id="content2" style="display:none">
                   <div id="gjs-loader"> Loading...  </div>
                   <canvas id="gjs-canvas"></canvas>
