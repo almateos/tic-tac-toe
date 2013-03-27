@@ -84,10 +84,10 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
       window.BIG.views.bank.render({ balance: res.response.real_balance, player_id: id })
 
     console.log 'team', value
-    ready = true
+    ready  = true
     myTeam = value
     myTurn = value
-    dirty = true
+    dirty  = true
     doNotify = true
 
   socket.on 'end', (didWin) ->

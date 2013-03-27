@@ -45,15 +45,15 @@ class BIG
         getParams[k] = v
     endpoint += url.format({query: getParams})
 
-    body = if (method == "GET") then '' else JSON.stringify(params);
+    body = if (method == "GET") then '' else JSON.stringify(params)
     options =
         hostname: config.api.host
         port: 80
         path: endpoint
         method: method
         headers:
-          'Content-Type': 'application/json',
-          'Content-Length': body.length
+          'Content-Type': 'application/json; Charset=UTF-8',
+          #'Content-Length': body.length
         #auth: authKeys.api_key + ':' + authKeys.api_secret
 
     req = http.request options, (res) ->
