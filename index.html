@@ -12,38 +12,43 @@
         require(['BIG'], function(BIG) {
             window.BIG = BIG;
             BIG.init({
-                        api_key: "<%= api_key %>",
-                        player_id: "<%= player_id %>",
-                        player_token: "<%= player_token %>"
-                    },
-                    function(err, data) {
-                        console.log('api.init:', err, data);
-                        if(err)
-                            console.log(err);
-                        else
-                            user = data.response;
+                    api_key: "<%= api_key %>",
+                    player_id: "<%= player_id %>",
+                    player_token: "<%= player_token %>"
+                },
+                function(err, res) {
+                    console.log('api.init:', err, res);
+                    if(err) {
+                        console.log(err);
+                    } else {
+                        console.log('user:', res);
+                        user = res.data;
+                        BIG.api('GET', '/lobbies', {}, function(err2, res2) {
+                            if(err2) {
+                                console.log(err2);
+                            } else {
+                                console.log('lobbies:', res2);
+                                lobbies = res2.data;
 
-                        data2 = {
-                            lobbies: [
-                                { name: 'free',   cost: null},
-                                { name: 'bronze', cost: 100},
-                                { name: 'silver', cost: 250},
-                                { name: 'gold',   cost: 500}
-                            ],
-                            user: { balance: user.real_balance}
-                        };
+                                data2 = {
+                                    lobbies: lobbies,
+                                    user: { balance: user.real_balance}
+                                };
 
-                        BIG.ui('lobby', '#lobby',  data2);
-                        BIG.ui('bank', '#bank', { balance: user.real_balance, player_id: user.id });
+                                BIG.ui('lobby', '#lobby',  data2);
+                                BIG.ui('bank', '#bank', { balance: user.real_balance, player_id: user.id });
 
 
-                        // Disconnect user (from api and lobbies)
-                        window.onbeforeunload = function (e) {
-                            BIG.disconnect('player_1', function(err, data) { console.log(err, data) } );
-                        }
+                                // Disconnect user (from api and lobbies)
+                                window.onbeforeunload = function (e) {
+                                    BIG.disconnect('player_1', function(err, data) { console.log(err, data) } );
+                                }
+                            }
+                        });
+                    }
 
-                        //BIG.ui({type:'status', element: '#status'}, callback);
-                    })
+                    //BIG.ui({type:'status', element: '#status'}, callback);
+                });
         })
     </script>
 </head>

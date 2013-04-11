@@ -64,7 +64,7 @@ class BIG
         console.log 'daahhhh:', chunk
         #console.log('BODY: ' + chunk)
         #TODO: check if response content-type is in json ?
-        callback(null, {data: JSON.parse(chunk), body: chunk, code: res.statusCode, headers: res.headers })
+        callback(null, JSON.parse(chunk))
 
     req.on 'error', (e) ->
       callback({code: e.statusCode, error: e.message, raw: e})
@@ -72,6 +72,7 @@ class BIG
 
     if(method != "GET")
       req.write(body)
+
     #req.write('data\n')
     req.end()
 
@@ -125,12 +126,12 @@ io.sockets.on 'connection', (socket) ->
       party   = parties[socket.party]
       ennemy = if party[0] != socket.pl then party[0] else party[1]
       delete parties[socket.party]
-      BIG.api 'POST', '/challenges/' + socket.pl, { id: socket.pl, result: 'loose', cause: 'disconnection' }, (err, res) ->
+      BIG.api 'PUT', '/challenges/' + socket.pl, { id: socket.pl, result: 'loose', cause: 'disconnection' }, (err, res) ->
         emit(ennemy, 'msg', 'Your adversary just disconnected.')
         emit(ennemy, 'end', 'win')
         console.log('logged out:', err, res)
 
-    BIG.api 'post', '/players', { id: socket.pl, online: 0 }, (err, res) ->
+    BIG.api 'PUT', '/players/' + socket.pl, { online: 0 }, (err, res) ->
       console.log('logged out:', err, res)
     delete clients[socket.pl]
       
@@ -145,8 +146,8 @@ io.sockets.on 'connection', (socket) ->
       clients[pl] = socket
       socket.pl = pl
 
-      BIG.api 'post', '/players', { id: pl, online:1 }, (err, res) ->
-        console.log('logged in:', err, res)
+      BIG.api 'PUT', '/players/' + pl, { online:1 }, (err, res) ->
+        console.log('socket logged in:', err, res)
         emit(pl, 'registered', pl)
 
   socket.on 'move', (gid) ->
@@ -163,7 +164,7 @@ io.sockets.on 'connection', (socket) ->
       for j in [0...rules[i].length]
         res = false if(grid[rules[i][j]] != socket.team)
       if res == true
-        BIG.api 'post', '/challenges/' + socket.pl, { id: socket.pl, result: 'win', cause: 'normal' }, (err, res) ->
+        BIG.api 'PUT', '/challenges/' + socket.pl, { id: socket.pl, result: 'win', cause: 'normal' }, (err, res) ->
           emit(socket.pl, 'end', true)
           emit(ennemy, 'end', false)
           delete parties[socket.party]
@@ -171,7 +172,7 @@ io.sockets.on 'connection', (socket) ->
     for i in [0...grid.length] then if grid[i] != undefined then count++
 
     if !res && count == 9
-      BIG.api 'post', '/challenges/' + socket.pl, { id: socket.pl, result: 'draw', cause: 'normal' }, (err, res) ->
+      BIG.api 'PUT', '/challenges/' + socket.pl, { id: socket.pl, result: 'draw', cause: 'normal' }, (err, res) ->
         emit(socket.pl, 'end', null)
         emit(ennemy, 'end', null)
         delete parties[socket.party]
@@ -246,10 +247,8 @@ login = (req, res, username, hash) ->
     req.session.token = hash
     req.session.user = username
 
-    BIG.api 'post', '/players', { id: username }, (err, res2) ->
-      console.log('VINCE', res2, err)
-      users[username].player_token = res2.data.response.token
-      console.log('logged in:', err, res2)
+    BIG.api 'PUT', '/players/' + username, {}, (err, res2) ->
+      users[username].player_token = res2.data.token
       res.redirect('/')
 
 app.post '/register', (req, res) ->

@@ -81,7 +81,7 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     #console.log window.BIG
     window.BIG.api 'GET', '/players/' + id, {}, (err, res) ->
       #window.BIG.views.lobby.render({ user: { balance: res.response.real_balance }, player_id: id })
-      window.BIG.views.bank.render({ balance: res.response.real_balance, player_id: id })
+      window.BIG.views.bank.render({ balance: res.data.real_balance, player_id: id })
 
     console.log 'team', value
     ready  = true
@@ -108,13 +108,12 @@ require ['gamecs', 'tilemap', 'surface'], (gcs, TileMap, Surface) ->
     console.log 'winner ?', didWin
 
     window.BIG.api 'GET', '/players/' + id, {}, (err, res) ->
-      window.BIG.views.bank.render({ balance: res.response.real_balance, player_id: id })
+      window.BIG.views.bank.render({ balance: res.data.real_balance, player_id: id })
 
       data = BIG.views.lobby.data
       for i in [0...data.lobbies.length] then data.lobbies[i].status = false
-      data.user.balance = res.response.real_balance
+      data.user.balance = res.data.real_balance
       
-      console.log('dafuk', data)
       window.BIG.views.lobby.render(data)
 
 
